@@ -21,7 +21,8 @@ public class CustomAuthentificationServlet extends HttpServlet {
 	protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 		String username = req.getParameter("username");
 		String password = req.getParameter("password");
-		authenticationService.login(username, password);
+		if(null != username && password != null)
+			authenticationService.login(username, password);
 		StringBuilder redirectTarget = new StringBuilder(req.getContextPath() + "/login");
 		 String extraParams = extractParameters(req);
 	        if (extraParams.length() > 0) {

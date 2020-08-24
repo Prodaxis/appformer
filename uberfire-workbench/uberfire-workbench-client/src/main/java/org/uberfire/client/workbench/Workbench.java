@@ -227,7 +227,12 @@ public class Workbench {
                 layout.setMarginWidgets(isStandaloneMode, headersToKeep);
                 layout.onBootstrap();
                 addLayoutToRootPanel(layout);
-                placeManager.goTo(new DefaultPlaceRequest(homePerspective.getIdentifier()));
+                String[] perspectivePaths = getPerspectivePaths();
+                if(null == perspectivePaths){
+                	placeManager.goTo(new DefaultPlaceRequest(homePerspective.getIdentifier()));
+                }else{
+                	placeManager.goTo(new DefaultPlaceRequest(perspectivePaths[0]));
+                }
             } else {
                 activityBeansCache.noOp();
                 logger.warn("No home perspective available!");
@@ -253,6 +258,21 @@ public class Workbench {
         notifyJSReady();
     }
 
+    private String[] getPerspectivePaths(){
+    	String url = Window.Location.getHref();
+    	if(url.contains("#")){
+    		String perspectiveString = url.substring(url.indexOf("#")+ 1, url.length());
+        	if(perspectiveString.contains("%7C")){
+        		String[] perspectivePaths = perspectiveString.split("%7C");
+        		return perspectivePaths;
+        	}else{
+        		return new String[]{perspectiveString};
+        	}
+    	}else{
+    		return null;
+    	}
+    }
+    
     private void addCloseHandler() {
         if (UserAgent.isChrome()) {
             setupMessageForUnsavedChanges(); // only works on chrome
